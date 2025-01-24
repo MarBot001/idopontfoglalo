@@ -12,26 +12,24 @@ class AppointmentController extends Controller
     {
         $model = new Appointment();
 
-        // Ha POST kérés érkezik, próbáljuk meg menteni a foglalást
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Sikeres foglalás!');
-            return $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->validate()) { // Ha minden validáció sikeres
+                if ($model->save()) {
+                    Yii::$app->session->setFlash('success', 'Sikeresen foglaltál időpontot!');
+                    return $this->redirect(['index']);
+                }
+            } else {
+                // Validációs hibák esetén
+                $errors = $model->getFirstErrors();
+                $errorMessage = reset($errors); // Az első hibaüzenet
+                Yii::$app->session->setFlash('error', $errorMessage);
+            }
         }
 
         return $this->render('index', [
             'model' => $model,
         ]);
     }   
-
-
-    public function actionCreate()
-    {
-        $model = new Appointment();
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
-        }
-        return $this->render('create', ['model' => $model]);
-    }
 
     public function actionGetEvents()
     {

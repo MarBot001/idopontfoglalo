@@ -34,9 +34,12 @@ class Appointment extends ActiveRecord
                 '14:00',
                 '14:30',
                 '15:00',
-                '15:30'
-            ], 'message' => 'Csak félórás időpontokat választhatsz.'],
-            ['time', 'validateFutureTime'], // Egyedi validáció
+                '15:30',
+                '16:00',
+                '16:30',
+                '17:00',
+            ], 'message' => 'Csak üres időpontokat választhatsz.'],
+            ['time', 'validateFutureTime'],
             [['date'], 'validateDate'],
         ];
     }

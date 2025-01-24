@@ -116,4 +116,12 @@ a.desc:after {
     .fc-toolbar-chunk:last-child {
         order: 3; /* Nézetváltó gombok (naptár alatt) */
     }
+    
+}
+
+/* Naptár */
+
+/* Naptár FORM */
+.appointment-form #selected-date, .appointment-form #selected-time{
+    display: none;
 }

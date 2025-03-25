@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
   fourteenDaysLater.setDate(today.getDate() + 14);
 
   var calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'timeGridWeek',
+      initialView: 'timeGrid',
+      duration: { days: 4 }, // Mindig 4 nap látszik egyszerre
       initialDate: tomorrow,
       contentHeight: 'auto',
       height: 'auto',
@@ -31,7 +32,12 @@ document.addEventListener('DOMContentLoaded', function () {
         start: tomorrow,
         end: fourteenDaysLater,
       },
-      dayHeaderFormat: { month: '2-digit', day: '2-digit' },
+      dayHeaderContent: function(args) {
+        let date = args.date;
+        let formattedDate = date.toLocaleDateString('hu-HU', { month: '2-digit', day: '2-digit' });
+        let weekday = date.toLocaleDateString('hu-HU', { weekday: 'long' });
+        return { html: formattedDate + '<br>' + weekday };
+    },
       allDaySlot: false,
       selectable: true,
       editable: false,

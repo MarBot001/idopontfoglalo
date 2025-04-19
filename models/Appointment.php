@@ -1,8 +1,9 @@
 <?php
-
 namespace app\models;
 
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
+use app\models\AvailableTime;
 
 class Appointment extends ActiveRecord
 {
@@ -14,33 +15,14 @@ class Appointment extends ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'date', 'time'], 'required'],
+            [['name', 'date', 'time', 'service'], 'required'],
             [['date'], 'date', 'format' => 'php:Y-m-d'],
-            [['name', 'email', 'phone'], 'string', 'max' => 255],
+            [['name', 'email', 'phone', 'service'], 'string', 'max' => 255],
+            [['comments'], 'string'],
             [['email'], 'email'],
-            [['time'], 'in', 'range' => [
-                '08:00',
-                '08:30',
-                '09:00',
-                '09:30',
-                '10:00',
-                '10:30',
-                '11:00',
-                '11:30',
-                '12:00',
-                '12:30',
-                '13:00',
-                '13:30',
-                '14:00',
-                '14:30',
-                '15:00',
-                '15:30',
-                '16:00',
-                '16:30',
-                '17:00',
-            ], 'message' => 'Csak üres időpontokat választhatsz.'],
+            ['time', 'validateTimeFromDb'],
             ['time', 'validateFutureTime'],
-            [['date'], 'validateDate'],
+            ['date', 'validateDate'],
         ];
     }
 
@@ -54,18 +36,15 @@ class Appointment extends ActiveRecord
         }
     }
 
-
-
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            // Ellenőrizzük, hogy van-e már foglalás ugyanerre az időpontra
             if (self::find()->where(['date' => $this->date, 'time' => $this->time])->exists()) {
                 $this->addError('time', 'Erre az időpontra már van foglalás.');
                 return false;
             }
 
-            // Konvertáljuk a HH:mm formátumot HH:mm:ss formátumra
+            // HH:mm → HH:mm:ss konverzió
             if ($this->time && !str_contains($this->time, ':00')) {
                 $this->time .= ':00';
             }
@@ -75,20 +54,11 @@ class Appointment extends ActiveRecord
         return false;
     }
 
-    public function validateDate($attribute, $params)
+    public function validateTimeFromDb($attribute)
     {
-        $date = strtotime($this->date);
-        $dayOfWeek = date('N', $date); // 1 = hétfő, 7 = vasárnap
-
-        if ($dayOfWeek == 6 || $dayOfWeek == 7) {
-            $this->addError($attribute, 'Hétvégére nem lehet időpontot foglalni.');
-        }
-
-        $currentDate = strtotime(date('Y-m-d'));
-        $maxDate = strtotime('+7 weekdays', $currentDate);
-
-        if ($date > $maxDate) {
-            $this->addError($attribute, 'Csak 7 munkanappal előre lehet időpontot foglalni.');
+        $validTimes = ArrayHelper::getColumn(AvailableTime::find()->all(), 'time');
+        if (!in_array($this->$attribute, $validTimes)) {
+            $this->addError($attribute, 'Csak az adatbázisban rögzített időpontokra foglalhatsz.');
         }
     }
 }

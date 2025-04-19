@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'timeGrid',
-      duration: { days: 4 }, // Mindig 4 nap látszik egyszerre
+      duration: { days: 4 },
       initialDate: tomorrow,
       contentHeight: 'auto',
       height: 'auto',
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
       allDaySlot: false,
       selectable: true,
       editable: false,
-      events: '/appointment/get-events',
+      events: '/site/get-events',
       eventOverlap: true,
       eventColor: '#ff4d4d',
       eventTextColor: '#fff',

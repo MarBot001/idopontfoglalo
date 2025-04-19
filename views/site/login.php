@@ -14,7 +14,7 @@ $this->title = 'Bejelentkezés';
     <h1><?= Html::encode($this->title) ?></h1>
 
     <div class="row">
-        <div class="col-lg-5">
+        <div class="col-w-100">
 
             <?php $form = ActiveForm::begin([
                 'id' => 'login-form',
@@ -34,7 +34,7 @@ $this->title = 'Bejelentkezés';
                 'template' => "<div class=\"custom-control custom-checkbox\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",
             ])->label('Maradjon bejelentkezve! ') ?>
 
-            <div class="form-group">
+            <div class="button-box">
                 <div>
                     <?= Html::submitButton('Bejelentkezés', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
                 </div>

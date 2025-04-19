@@ -47,7 +47,6 @@ class AdminController extends Controller
         $appointment = Appointment::findOne($id);
         if ($appointment !== null) {
             $appointment->delete();
-            Yii::$app->session->setFlash('success', 'Foglalás sikeresen törölve.');
         } else {
             Yii::$app->session->setFlash('error', 'A foglalás nem található.');
         }

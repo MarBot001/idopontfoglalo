@@ -15,6 +15,14 @@ class Appointment extends ActiveRecord
     public function rules()
     {
         return [
+            ['name', 'required', 'message' => 'A név megadása kötelező!'],
+            ['date', 'required', 'message' => 'Kérem, válasszon egy időpontot!'],
+            ['time', 'required', 'message' => ''],
+            ['service', 'required', 'message' => 'Válasszon egy szolgáltatást!'],
+            ['email', 'required', 'message' => 'Kérem, adja meg az email címét.'],
+            ['phone', 'required', 'message' => 'Kérem, adja meg a telefonszámát!.'],
+            [['name', 'email', 'phone'], 'trim'],
+
             [['name', 'date', 'time', 'service'], 'required'],
             [['date'], 'date', 'format' => 'php:Y-m-d'],
             [['name', 'email', 'phone', 'service'], 'string', 'max' => 255],
@@ -52,6 +60,16 @@ class Appointment extends ActiveRecord
             return true;
         }
         return false;
+    }
+
+    public function validateDate($attribute, $params)
+    {
+        $date = strtotime($this->date);
+        $dayOfWeek = date('N', $date); // 1 = hétfő, 7 = vasárnap
+
+        if ($dayOfWeek == 6 || $dayOfWeek == 7) {
+            $this->addError($attribute, 'Hétvégére nem lehet időpontot foglalni.');
+        }
     }
 
     public function validateTimeFromDb($attribute)

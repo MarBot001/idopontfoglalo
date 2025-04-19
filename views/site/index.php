@@ -1,31 +1,56 @@
 <?php
+
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-$this->title = 'Időpontfoglaló';
+$this->title = 'Időpontfoglaló rendszer';
 
 ?>
 
-<h1><?= Html::encode($this->title) ?></h1>
 
 <!-- Időpontfoglaló űrlap -->
 <div class="appointment-form">
+    <h1><?= Html::encode($this->title) ?></h1>
     <?php $form = ActiveForm::begin(); ?>
-    
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true])->label('Név') ?>
-    <?= $form->field($model, 'email')->input('email')->label('Email cím') ?>
-    <?= $form->field($model, 'phone')->textInput(['maxlength' => true])-> label('Telefonszám') ?>
-    <p>Válaszd ki a megfelelő napot és időpontot a naptárban!<br>Előre legfeljebb 10 munkanapig foglalhatsz!</p>
-    <div id="calendar"></div>
-    <?= $form->field($model, 'date')->textInput(['readonly' => true, 'id' => 'selected-date'])->label(false) ?>
-    <?= $form->field($model, 'time')->textInput(['readonly' => true, 'id' => 'selected-time'])->label(false) ?>
-    <?= $form->field($model, 'service')->dropDownList($services, ['prompt' => 'Válassz szolgáltatást'])->label('Szolgáltatás') ?>
-    <?= $form->field($model, 'comments')->textarea(['rows' => 6])->label('Megjegyzés') ?>
-    <div class="form-group">
-        <?= Html::submitButton('Foglalás mentése', ['class' => 'btn btn-success']) ?>
+    <div class="row ">
+        <div class="col-md-6">
+            <?= $form->field($model, 'name')->textInput([
+                'maxlength' => true,
+                'placeholder' => 'pl. Példa János'
+            ])->label('Teljes név') ?>
+
+            <?= $form->field($model, 'email')->input('email', [
+                'placeholder' => 'pl. valaki@email.com'
+            ])->label('Email cím') ?>
+
+            <?= $form->field($model, 'phone')->textInput([
+                'maxlength' => true,
+                'placeholder' => 'pl. +36 30 123 4567'
+            ])->label('Telefonszám') ?>
+        </div>
+
+
+        <div class="col-md-6">
+            <?= $form->field($model, 'service')->dropDownList($services, ['prompt' => ''])->label('Szolgáltatás') ?>
+            <?= $form->field($model, 'comments')->textarea([
+                'rows' => 5,
+                'placeholder' => 'További megjegyzés (nem kötelező)'
+            ])->label('Megjegyzés') ?>
+
+        </div>
+        <div id="calendar"></div>
+        <?= $form->field($model, 'date')->textInput(['readonly' => true, 'id' => 'selected-date'])->label(false) ?>
+        <div class="button-box">
+            <?= Html::submitButton('Foglalás mentése', ['class' => 'btn btn-success']) ?>
+        </div>
+
+        <?= $form->field($model, 'time')->textInput(['readonly' => true, 'id' => 'selected-time'])->label(false) ?>
+
+        <?php ActiveForm::end(); ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+
+
 </div>
 
 <?php
@@ -44,4 +69,3 @@ if (Yii::$app->session->hasFlash('success')) {
     $this->registerJs("alert('" . addslashes($successMessage) . "');");
 }
 ?>
-
